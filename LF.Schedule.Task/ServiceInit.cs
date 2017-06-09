@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LF.Schedule.ServiceBase;
 
 namespace LF.Schedule.Task
@@ -18,6 +16,8 @@ namespace LF.Schedule.Task
 
         private static readonly ServiceConfig ServiceConfig=new ServiceConfig();
 
+
+
         public ServiceInit()
         {
             if(null==_stateInfoByServiceKey)
@@ -26,6 +26,8 @@ namespace LF.Schedule.Task
                 _serviceDomainByServiceKey=new Dictionary<string, AppDomain>();
             if(null==_serviceJobBaseByServiceKey)
                 _serviceJobBaseByServiceKey=new Dictionary<string, ServiceJobBase>();
+            CreateAppDomain();
+            CreateService();
         }
 
         private void CreateAppDomain()
@@ -75,10 +77,9 @@ namespace LF.Schedule.Task
                 var addInService = _serviceDomainByServiceKey[serviceKey].CreateInstanceAndUnwrap(serviceClass[1].Trim(), serviceClass[0].Trim()) as ServiceJobBase;
                 _serviceJobBaseByServiceKey[serviceKey] = addInService;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e);
-                throw;
+                Console.WriteLine("初始化异常："+ex.Message);
             }
             
         }

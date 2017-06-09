@@ -43,6 +43,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Job\ServiceExecuteJob.cs" />
+    <Compile Include="Job\ServiceMonitorJob.cs" />
+    <Compile Include="ServiceHelper.cs" />
     <Compile Include="ServiceInit.cs" />
     <Compile Include="ServiceConfig.cs" />
     <Compile Include="ConfigSetting.cs" />
