@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LF.Schedule.Task.Job
 {
-    class ServiceExecuteJob
+   internal class ServiceExecuteJob
     {
     }
 }
