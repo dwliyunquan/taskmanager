@@ -33,6 +33,7 @@ namespace LF.Winservice.Test1
             }
             catch (Exception ex)
             {
+
                 return;
             }
         }
