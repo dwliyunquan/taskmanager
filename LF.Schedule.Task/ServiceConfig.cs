@@ -2,46 +2,43 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Common.Logging;
+using LF.Schedule.ServiceBase;
 
 namespace LF.Schedule.Task
 {
     internal class ServiceConfig
     {
-        private static Dictionary<string, string> _serviceKeyByconfigFile = null;
+        private static readonly ILog Log = LogManager.GetLogger(typeof(ServiceConfig));
 
-        private static Dictionary<string, ServiceConfiguration> _configurationByserviceKey = null;
+        private static readonly Dictionary<string, string> ServiceKeyByconfigFile = new Dictionary<string, string>();
 
-        public Dictionary<string, string> ServiceConfigFiles => _serviceKeyByconfigFile;
+        private static readonly Dictionary<string, ServiceConfiguration> ConfigurationByserviceKey = new Dictionary<string, ServiceConfiguration>();
 
-        public Dictionary<string, ServiceConfiguration> ServiceConfiguration => _configurationByserviceKey;
+        public Dictionary<string, ServiceConfiguration> ServiceConfiguration => ConfigurationByserviceKey;
 
         /// <summary>
         /// 初始化配置信息
         /// </summary>
         public ServiceConfig()
         {
-            if (_serviceKeyByconfigFile == null)
-                _serviceKeyByconfigFile=new Dictionary<string, string>();
-            if(_configurationByserviceKey==null)
-                _configurationByserviceKey=new Dictionary<string, ServiceConfiguration>();
-
             LoadServiceConfigs();
         }
 
         /// <summary>
         /// 加载配置文件
         /// </summary>
-        private static void LoadServiceConfigs()
+        public static void LoadServiceConfigs()
         {
-            foreach (var configFile in _serviceKeyByconfigFile.Keys.ToArray())
+            foreach (var configFile in ServiceKeyByconfigFile.Keys.ToArray())
             {
-                var serviceId = _serviceKeyByconfigFile[configFile];
+                var serviceId = ServiceKeyByconfigFile[configFile];
                 if (File.Exists(configFile)) continue;
 
-                _serviceKeyByconfigFile.Remove(configFile);
+                ServiceKeyByconfigFile.Remove(configFile);
 
-                if (_configurationByserviceKey.ContainsKey(serviceId))
-                    _configurationByserviceKey.Remove(serviceId);
+                if (ConfigurationByserviceKey.ContainsKey(serviceId))
+                    ConfigurationByserviceKey.Remove(serviceId);
             }
 
             if (!Directory.Exists(ConfigSetting.ServiceLocation)) return;
@@ -49,13 +46,14 @@ namespace LF.Schedule.Task
             foreach (var configFile in Directory.GetFiles(ConfigSetting.ServiceLocation, "ServiceJob.config",
                 SearchOption.AllDirectories))
             {
-                if (_serviceKeyByconfigFile.ContainsKey(configFile)) continue;
+                if (ServiceKeyByconfigFile.ContainsKey(configFile)) continue;
 
-                var serviceId = Guid.NewGuid().ToString("N");
-                _serviceKeyByconfigFile[configFile] = serviceId;
+                var serviceKey = Guid.NewGuid().ToString("N");
+                ServiceKeyByconfigFile[configFile] = serviceKey;
 
                 var serviceConfiguration = new ServiceConfiguration(configFile);
-                _configurationByserviceKey[serviceId] = serviceConfiguration;
+                ConfigurationByserviceKey[serviceKey] = serviceConfiguration;
+                Log.InfoFormat("成功加载服务 [{0}] 配置信息 [serviceKey: {1}]", serviceConfiguration.ServiceName, serviceKey);
             }
         }
     }

@@ -2,9 +2,9 @@
 using System;
 using System.IO;
 
-namespace LF.Schedule.Task
+namespace LF.Schedule.ServiceBase
 {
-    internal class ServiceConfiguration
+    public class ServiceConfiguration
     {
         public DefaultConfiguration ChildServiceConfiguration = null;
 
@@ -12,7 +12,7 @@ namespace LF.Schedule.Task
         {
             ConfigFile = serviceConfigFile;
 
-            ChildServiceConfiguration = new DefaultConfiguration(new FileInfo(serviceConfigFile), "ServiceJob");
+            ChildServiceConfiguration = new DefaultConfiguration(new FileInfo(serviceConfigFile), "ServiceJobConfig");
         }
 
         public string ConfigFile { get; private set; }
@@ -22,8 +22,6 @@ namespace LF.Schedule.Task
         public string ServiceName => ChildServiceConfiguration["ServiceName"].Trim();
 
         public string Description => ChildServiceConfiguration["Description"].Trim();
-
-        public bool IsAddInServiceInstalled => string.Compare(ChildServiceConfiguration["ServiceState"].Trim(), "Installed", StringComparison.OrdinalIgnoreCase) == 0;
 
         public CycleExecuteModeEnum CycleExecuteMode => (CycleExecuteModeEnum) Enum.Parse(typeof(CycleExecuteModeEnum),
             ChildServiceConfiguration["CycleExecuteMode"].Trim(), true);

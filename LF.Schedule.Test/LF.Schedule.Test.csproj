@@ -4,15 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{236DEB4D-4FA7-4CF4-8D6C-B502C053D523}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{FCF4C54C-2E81-46E3-BA8B-8D6CF22597DF}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LF.Schedule.ServiceBase</RootNamespace>
-    <AssemblyName>LF.Schedule.ServiceBase</AssemblyName>
+    <RootNamespace>LF.Schedule.Test</RootNamespace>
+    <AssemblyName>LF.Schedule.Test</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +24,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -34,8 +37,11 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\Common.Logging.dll</HintPath>
     </Reference>
-    <Reference Include="SXT.Configuration">
-      <HintPath>..\Lib\SXT.Configuration.dll</HintPath>
+    <Reference Include="Common.Logging.Log4Net">
+      <HintPath>..\Lib\Common.Logging.Log4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\Lib\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -47,13 +53,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ServiceConfiguration.cs" />
-    <Compile Include="ServiceJobBase.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ServiceJob.config" />
-    <None Include="app.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="log4net.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LF.Schedule.Task\LF.Schedule.Task.csproj">
+      <Project>{53dbb397-9942-4bf1-bf75-19316f800fc7}</Project>
+      <Name>LF.Schedule.Task</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

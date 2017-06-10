@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{236DEB4D-4FA7-4CF4-8D6C-B502C053D523}</ProjectGuid>
+    <ProjectGuid>{E69F909D-77CF-4A38-8886-CCD79A09F9F5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LF.Schedule.ServiceBase</RootNamespace>
-    <AssemblyName>LF.Schedule.ServiceBase</AssemblyName>
+    <RootNamespace>LF.Winservice.Test1</RootNamespace>
+    <AssemblyName>LF.Winservice.Test1</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,14 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Common.Logging, Version=3.3.1.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\Common.Logging.dll</HintPath>
-    </Reference>
-    <Reference Include="SXT.Configuration">
-      <HintPath>..\Lib\SXT.Configuration.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -47,13 +41,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ServiceConfiguration.cs" />
-    <Compile Include="ServiceJobBase.cs" />
+    <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\LF.Schedule.ServiceBase\LF.Schedule.ServiceBase.csproj">
+      <Project>{236deb4d-4fa7-4cf4-8d6c-b502c053d523}</Project>
+      <Name>LF.Schedule.ServiceBase</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <None Include="ServiceJob.config" />
-    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
