@@ -27,7 +27,12 @@ namespace LF.Schedule.Contract
         /// <summary>
         /// 运行异常，影响程序正常运行
         /// </summary>
-        Exception
+        Exception,
+
+        /// <summary>
+        /// 卸载
+        /// </summary>
+        Uninstall
     }
 
     public enum ServiceCommandEnum
@@ -50,7 +55,12 @@ namespace LF.Schedule.Contract
         /// <summary>
         /// 加载服务
         /// </summary>
-        Load
+        Load,
+
+        /// <summary>
+        /// 安装
+        /// </summary>
+        Install
 
     }
 
