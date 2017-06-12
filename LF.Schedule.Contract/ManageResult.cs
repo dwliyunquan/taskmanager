@@ -60,7 +60,11 @@ namespace LF.Schedule.Contract
         /// <summary>
         /// 安装
         /// </summary>
-        Install
+        Install,
+        /// <summary>
+        /// 卸载
+        /// </summary>
+        Uninstall
 
     }
 
@@ -118,7 +122,6 @@ namespace LF.Schedule.Contract
         /// <summary>
         /// 服务指令
         /// </summary>
-        [DataMember]
         public ServiceCommandEnum Command { get; set; }
     }
 

@@ -5,6 +5,7 @@ using System.Linq;
 using Common.Logging;
 using LF.Schedule.Contract;
 using LF.Schedule.ServiceBase;
+using LF.Schedule.Task.Contract;
 using LF.Schedule.Task.Job;
 using Quartz;
 using Quartz.Impl;
@@ -32,12 +33,14 @@ namespace LF.Schedule.Task
 
         public Dictionary<string, ServiceJobBase> ServiceJobBase => ServiceJobBaseByServiceKey;
 
+        public Dictionary<string, ServiceStateInfo> ServiceStateInfo => ServiceStateInfoByServuceKey;
+
 
         public ServiceInit()
         {
             CreateServiceStateInfo();
-            CreateAppDomain();
-            CreateService();
+            //CreateAppDomain();
+            //CreateService();
         }
 
         /// <summary>
@@ -59,6 +62,13 @@ namespace LF.Schedule.Task
         /// <param name="serviceConfiguration"></param>
         private static void CreateAppDomainByServiceKey(string serviceKey)
         {
+            if (ServiceDomainByServiceKey.ContainsKey(serviceKey))
+                return;
+
+            var serviceStateInfo = ServiceStateInfoByServuceKey[serviceKey];
+            if (serviceStateInfo.ServiceState != ServiceStateEnum.Uninstall)
+                return;
+
             var serviceConfiguration = ServiceConfig.ServiceConfiguration[serviceKey];
             var domainSetup = new AppDomainSetup
             {
@@ -89,6 +99,10 @@ namespace LF.Schedule.Task
         private static void CreateServiceByServiceKey(string serviceKey)
         {
             if (ServiceJobBaseByServiceKey.ContainsKey(serviceKey))
+                return;
+
+            var serviceStateInfo = ServiceStateInfoByServuceKey[serviceKey];
+            if(serviceStateInfo.ServiceState!=ServiceStateEnum.Uninstall)
                 return;
             var configurationByServiceKey = ServiceConfig.ServiceConfiguration;
             try
@@ -150,11 +164,13 @@ namespace LF.Schedule.Task
                 ServiceKey = serviceKey,
                 Description = serviceConfiguration.Description,
                 ServiceName = serviceConfiguration.ServiceName,
-                ServiceState = ServiceStateEnum.Stopped
+                ServiceState = ServiceStateEnum.Uninstall
             };
         }
 
-
+        /// <summary>
+        /// 创建计划任务
+        /// </summary>
         private static void ExecuteService()
         {
             if (_serviceScheduler == null)
@@ -180,7 +196,10 @@ namespace LF.Schedule.Task
             _serviceScheduler.Start();
         }
 
-
+        /// <summary>
+        /// 根据serviceKey创建计划任务
+        /// </summary>
+        /// <param name="serviceKey"></param>
         private static void ExecuteServiceByServiceKey(string serviceKey)
         {
             var configuration =ServiceConfig.ServiceConfiguration[serviceKey];
@@ -257,8 +276,16 @@ namespace LF.Schedule.Task
             var configuration = ServiceConfig.ServiceConfiguration[serviceKey];
             if (ServiceJobKeyByServiceKey.ContainsKey(serviceKey))
             {
-                _serviceScheduler.DeleteJob(ServiceJobKeyByServiceKey[serviceKey]);
-                ServiceJobKeyByServiceKey.Remove(serviceKey);
+                try
+                {
+                    _serviceScheduler.DeleteJob(ServiceJobKeyByServiceKey[serviceKey]);
+                    ServiceJobKeyByServiceKey.Remove(serviceKey);
+                }
+                catch (Exception ex)
+                {
+                    Log.ErrorFormat("服务 [{0}] ServiceJob 卸载异常", ex, configuration.ServiceName);
+                    throw;
+                }
             }
 
             if (ServiceJobBaseByServiceKey.ContainsKey(serviceKey))
@@ -270,6 +297,7 @@ namespace LF.Schedule.Task
                 catch(Exception ex)
                 {
                     Log.ErrorFormat("服务 [{0}] ServiceJobBase 卸载异常", ex, configuration.ServiceName);
+                    throw;
                 }
 
                 ServiceJobBaseByServiceKey.Remove(serviceKey);
@@ -285,6 +313,7 @@ namespace LF.Schedule.Task
                 catch(Exception ex)
                 {
                     Log.ErrorFormat("服务 [{0}] AppDomain 卸载异常", ex, configuration.ServiceName);
+                    throw;
                 }
 
                 ServiceDomainByServiceKey.Remove(serviceKey);
@@ -293,14 +322,22 @@ namespace LF.Schedule.Task
             }
         }
 
+        /// <summary>
+        /// 启动监听
+        /// </summary>
         public static void OnStart()
         {
             ServiceConfig.LoadServiceConfigs();
-            CreateAppDomain();
-            CreateService();
+            CreateServiceStateInfo();
+            //CreateAppDomain();
+            //CreateService();
             ExecuteService();
+            ManageServiceHelper.StartService();
         }
 
+        /// <summary>
+        /// 停止监听
+        /// </summary>
         public static void OnStop()
         {
             _serviceScheduler.Shutdown(true);
@@ -311,50 +348,154 @@ namespace LF.Schedule.Task
                 try
                 {
                     ServiceJobBaseByServiceKey[serviceKey].Dispose();
-                   
+
                     AppDomain.Unload(ServiceDomainByServiceKey[serviceKey]);
 
                     ServiceJobBaseByServiceKey.Clear();
                     ServiceDomainByServiceKey.Clear();
                     ServiceStateInfoByServuceKey.Clear();
+                    ManageServiceHelper.StopService();
                 }
-                catch { }
+                catch(Exception ex)
+                {
+                    var configuration = ServiceConfig.ServiceConfiguration[serviceKey];
+                    Log.ErrorFormat("服务停止异常 [{0}]  [serviceKey: {1}]", ex,configuration.ServiceName, serviceKey);
+                }
             }
         }
 
         #region 服务指令操作
 
-        public ServiceStateInfo StartServiceByServiceKey(string serviceKey)
+        internal static SendCommandResult StartServiceByServiceKey(string serviceKey)
         {
-            var serviceStateInfo = ServiceStateInfoByServuceKey[serviceKey];
-            if (serviceStateInfo.ServiceState == ServiceStateEnum.Normal ||
-                serviceStateInfo.ServiceState == ServiceStateEnum.Failed)
-                return serviceStateInfo;
-
-            serviceStateInfo.ServiceState=ServiceStateEnum.Normal;
-            return serviceStateInfo;
-
+            var sendCommandResult=new SendCommandResult();
+            try
+            {
+                var serviceStateInfo = ServiceStateInfoByServuceKey[serviceKey];
+                CreateAppDomainByServiceKey(serviceKey);
+                CreateServiceByServiceKey(serviceKey);
+                ExecuteServiceByServiceKey(serviceKey);
+                serviceStateInfo.ServiceState = ServiceStateEnum.Normal;
+                sendCommandResult.Success = true;
+            }
+            catch (Exception ex)
+            {
+                sendCommandResult.Success = true;
+                sendCommandResult.Message = $"启动服务异常:{ex.Message}";
+            }
+            return sendCommandResult;
         }
 
-        public ServiceStateInfo StopServiceByServiceKey(string serviceKey)
+        internal static SendCommandResult StopServiceByServiceKey(string serviceKey)
         {
-            var serviceStateInfo = ServiceStateInfoByServuceKey[serviceKey];
-            if (serviceStateInfo.ServiceState != ServiceStateEnum.Normal)
+            var sendCommandResult = new SendCommandResult();
+            try
+            {
+                var serviceStateInfo = ServiceStateInfoByServuceKey[serviceKey];
                 serviceStateInfo.ServiceState = ServiceStateEnum.Stopped;
-            return serviceStateInfo;
+                sendCommandResult.Success = true;
+            }
+            catch (Exception ex)
+            {
+                sendCommandResult.Success = true;
+                sendCommandResult.Message = $"停止服务异常:{ex.Message}";
+            }
+            return sendCommandResult;
+
+
         }
 
-        public void LoadService(string serviceKey)
+        internal static SendCommandResult InstallServiceByServiceKey(string serviceKey)
         {
-            ServiceConfig.LoadServiceConfigs();
-            CreateAppDomainByServiceKey(serviceKey);
-            CreateServiceByServiceKey(serviceKey);
-            CreateServiceByServiceKey(serviceKey);
+            var sendCommandResult = new SendCommandResult();
+            try
+            {
+                CreateAppDomainByServiceKey(serviceKey);
+                CreateServiceByServiceKey(serviceKey);
+
+                var serviceStateInfo = ServiceStateInfoByServuceKey[serviceKey];
+                serviceStateInfo.ServiceState = ServiceStateEnum.Stopped;
+                sendCommandResult.Success = true;
+            }
+            catch (Exception ex)
+            {
+                sendCommandResult.Success = true;
+                sendCommandResult.Message = $"安装服务异常:{ex.Message}";
+            }
+            return sendCommandResult;
+        }
+
+        internal static SendCommandResult UninstallServiceByServiceKey(string serviceKey)
+        {
+            var sendCommandResult = new SendCommandResult();
+            try
+            {
+                UninstallServiceDomainByserviceKey(serviceKey);
+                var serviceStateInfo = ServiceStateInfoByServuceKey[serviceKey];
+                serviceStateInfo.ServiceState = ServiceStateEnum.Uninstall;
+                sendCommandResult.Success = true;
+            }
+            catch (Exception ex)
+            {
+                sendCommandResult.Success = true;
+                sendCommandResult.Message = $"卸载服务异常:{ex.Message}";
+            }
+            return sendCommandResult;
+        }
+
+        internal static SendCommandResult ResetStartServiceByServiceKey(string serviceKey)
+        {
+            var sendCommandResult = new SendCommandResult();
+            try
+            {
+                UninstallServiceDomainByserviceKey(serviceKey);
+                InstallServiceByServiceKey(serviceKey);
+                StartServiceByServiceKey(serviceKey);
+            }
+            catch (Exception ex)
+            {
+                sendCommandResult.Success = true;
+                sendCommandResult.Message = $"重启服务异常:{ex.Message}";
+            }
+            return sendCommandResult;
+        }
+
+        /// <summary>
+        /// 加载服务
+        /// </summary>
+        internal static SendCommandResult LoadService()
+        {
+            var sendCommandResult = new SendCommandResult();
+            try
+            {
+                ServiceConfig.LoadServiceConfigs();
+                CreateServiceStateInfo();
+            }
+            catch (Exception ex)
+            {
+                sendCommandResult.Success = true;
+                sendCommandResult.Message = $"加载服务异常:{ex.Message}";
+            }
+            return sendCommandResult;
 
         }
 
         #endregion
 
+        public static void ChangeServiceStateInfo(ServiceStateInfo serviceStateInfo)
+        {
+            if (string.IsNullOrEmpty(serviceStateInfo?.ServiceKey))
+                return;
+            if (ServiceStateInfoByServuceKey[serviceStateInfo.ServiceKey] == null)
+                return;
+            ServiceStateInfoByServuceKey[serviceStateInfo.ServiceKey].ServiceState = serviceStateInfo.ServiceState;
+            if (!string.IsNullOrEmpty(serviceStateInfo.ExcuteDescription))
+                ServiceStateInfoByServuceKey[serviceStateInfo.ServiceKey].ExcuteDescription =
+                    serviceStateInfo.ExcuteDescription;
 
+            if (null != serviceStateInfo.ServiceStopTime)
+                ServiceStateInfoByServuceKey[serviceStateInfo.ServiceKey].ServiceStopTime = DateTime.Now;
+
+        }
     }
 }

@@ -45,7 +45,10 @@
       <HintPath>..\Lib\SXT.Configuration.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -54,7 +57,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Contract\ManagerService.cs" />
+    <Compile Include="Contract\ManageService.cs" />
+    <Compile Include="Contract\ManageServiceHelper.cs" />
     <Compile Include="Job\ServiceExecuteJob.cs" />
     <Compile Include="Job\ServiceMonitorJob.cs" />
     <Compile Include="ServiceHelper.cs" />

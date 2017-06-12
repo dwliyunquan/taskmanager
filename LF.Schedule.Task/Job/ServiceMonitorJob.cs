@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Common.Logging;
+using LF.Schedule.Contract;
 using LF.Schedule.ServiceBase;
 using Quartz;
 
@@ -11,40 +12,57 @@ namespace LF.Schedule.Task.Job
         private readonly ILog _log = LogManager.GetLogger(typeof(ServiceHelper));
         public void Execute(IJobExecutionContext context)
         {
-            Console.WriteLine("执行成功");
-            foreach (var serviceKey in ServiceHelper.ConfigurationByserviceKey.Keys.ToArray())
+            var configurationByserviceKey = ServiceHelper.ConfigurationByserviceKey;
+            foreach (var serviceKey in configurationByserviceKey.Keys.ToArray())
             {
                 try
                 {
-                        var msg = string.Empty;
-                        var executeState = ServiceHelper.ServiceJobBaseByServiceKey[serviceKey].ActiveTest(out msg);
 
-                        if (executeState == ExecuteStateEnum.Normal)
+                    var serviceStateInfo = ServiceHelper.ServiceStateInfoByServuceKey[serviceKey];
+                    if(serviceStateInfo.ServiceState!= ServiceStateEnum.Normal && serviceStateInfo.ServiceState != ServiceStateEnum.Failed)
+                        return;
+
+                    string msg;
+                    var executeState = ServiceHelper.ServiceJobBaseByServiceKey[serviceKey].ActiveTest(out msg);
+                    if (executeState == ExecuteStateEnum.Normal)
+                    {
+                        _log.InfoFormat("服务 [{0}] 心跳测试成功",configurationByserviceKey[serviceKey].ServiceName);
+                        ServiceInit.ChangeServiceStateInfo(new ServiceStateInfo()
                         {
-                        }
+                            ServiceState = ServiceStateEnum.Normal
+                        });
+                    }
 
-                        if (executeState == ExecuteStateEnum.Failed)
+                    if (executeState == ExecuteStateEnum.Failed)
+                    {
+                        _log.InfoFormat("服务 [{0}] 心跳测试失败", configurationByserviceKey[serviceKey].ServiceName);
+                        ServiceInit.ChangeServiceStateInfo(new ServiceStateInfo()
                         {
-                        }
+                            ServiceState = ServiceStateEnum.Failed
+                        });
+                    }
 
-                        if (executeState == ExecuteStateEnum.Exception)
-                            throw new System.Exception(msg);
+                    if (executeState == ExecuteStateEnum.Exception)
+                        throw new Exception(msg);
                 }
                 catch (Exception ex)
                 {
-                    //Log.ErrorFormat("服务 [{0}] 心跳测试异常", ex, WindowsServiceHelper.ServiceStateByServiceID[serviceKey].ServiceName);
 
-                    //WindowsServiceHelper.ServiceStateByServiceID[serviceKey].StateDescription = ex.Message;
-                    //WindowsServiceHelper.ServiceStateByServiceID[serviceKey].ServiceStopTime = System.DateTime.Now;
-                    //WindowsServiceHelper.ServiceStateByServiceID[serviceKey].ServiceState = ServiceStateEnum.Exception;
-
-                    //WindowsServiceHelper.UnloadAddInServiceDomainByServiceID(serviceKey);
+                    _log.ErrorFormat("服务 [{0}] 心跳测试异常", ex, configurationByserviceKey[serviceKey].ServiceName);
+                    ServiceInit.ChangeServiceStateInfo(new ServiceStateInfo()
+                    {
+                        ExcuteDescription = ex.Message,
+                        ServiceState = ServiceStateEnum.Exception
+                    });
+                    ServiceInit.UninstallServiceByServiceKey(serviceKey);
                 }
                 finally
                 {
-                    //if (WindowsServiceHelper.ServiceStateByServiceID[serviceKey].ServiceState == ServiceStateEnum.Exception &&
-                    //    WindowsServiceHelper.ServiceConfigurationByServiceID[serviceKey].AutoResetWhileException)
-                    //{ WindowsServiceHelper.StartAddInServiceByServiceID(serviceKey); }
+                    if (ServiceHelper.ServiceStateInfoByServuceKey[serviceKey].ServiceState ==
+                        ServiceStateEnum.Exception)
+                    {
+                        ServiceInit.ResetStartServiceByServiceKey(serviceKey);
+                    }
                 }
             }
         }

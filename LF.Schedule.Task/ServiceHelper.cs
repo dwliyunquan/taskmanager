@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using LF.Schedule.Contract;
 using LF.Schedule.ServiceBase;
 
 namespace LF.Schedule.Task
@@ -15,6 +16,8 @@ namespace LF.Schedule.Task
 
         public static Dictionary<string, ServiceConfiguration> ConfigurationByserviceKey => ServiceConfig
             .ServiceConfiguration;
+
+        public static Dictionary<string, ServiceStateInfo> ServiceStateInfoByServuceKey => ServiceInit.ServiceStateInfo;
 
 
         public static void OnStart()
