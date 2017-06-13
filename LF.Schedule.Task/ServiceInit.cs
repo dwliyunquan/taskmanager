@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using Common.Logging;
 using LF.Schedule.Contract;
 using LF.Schedule.ServiceBase;
@@ -317,7 +318,7 @@ namespace LF.Schedule.Task
                 }
 
                 ServiceDomainByServiceKey.Remove(serviceKey);
-
+                ServiceStateInfoByServuceKey[serviceKey].ServiceState= ServiceStateEnum.Uninstall;
                 Log.InfoFormat("成功卸载服务 [{0}] AppDomain [serviceKey: {1}]", configuration.ServiceName, serviceKey);
             }
         }
@@ -376,6 +377,8 @@ namespace LF.Schedule.Task
                 CreateServiceByServiceKey(serviceKey);
                 ExecuteServiceByServiceKey(serviceKey);
                 serviceStateInfo.ServiceState = ServiceStateEnum.Normal;
+                serviceStateInfo.ServiceStopTime = null;
+                serviceStateInfo.ServiceStartTime=DateTime.Now;
                 sendCommandResult.Success = true;
             }
             catch (Exception ex)
@@ -393,6 +396,8 @@ namespace LF.Schedule.Task
             {
                 var serviceStateInfo = ServiceStateInfoByServuceKey[serviceKey];
                 serviceStateInfo.ServiceState = ServiceStateEnum.Stopped;
+                serviceStateInfo.ServiceStopTime=DateTime.Now;
+                serviceStateInfo.ServiceStartTime = null;
                 sendCommandResult.Success = true;
             }
             catch (Exception ex)
@@ -415,6 +420,8 @@ namespace LF.Schedule.Task
 
                 var serviceStateInfo = ServiceStateInfoByServuceKey[serviceKey];
                 serviceStateInfo.ServiceState = ServiceStateEnum.Stopped;
+                serviceStateInfo.ServiceStartTime = null;
+                serviceStateInfo.ServiceStopTime = null;
                 sendCommandResult.Success = true;
             }
             catch (Exception ex)
@@ -445,16 +452,18 @@ namespace LF.Schedule.Task
 
         internal static SendCommandResult ResetStartServiceByServiceKey(string serviceKey)
         {
-            var sendCommandResult = new SendCommandResult();
+            var sendCommandResult = new SendCommandResult() {Success = true};
             try
             {
+                StopServiceByServiceKey(serviceKey);
+                Thread.Sleep(1000);
                 UninstallServiceDomainByserviceKey(serviceKey);
                 InstallServiceByServiceKey(serviceKey);
                 StartServiceByServiceKey(serviceKey);
             }
             catch (Exception ex)
             {
-                sendCommandResult.Success = true;
+                sendCommandResult.Success = false;
                 sendCommandResult.Message = $"重启服务异常:{ex.Message}";
             }
             return sendCommandResult;

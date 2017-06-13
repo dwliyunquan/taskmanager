@@ -87,6 +87,11 @@ namespace LF.Schedule.Manage
         public ServiceStateEnum ServiceState { get; set; }
 
         /// <summary>
+        ///状态名称
+        /// </summary>
+        public string ServiceStateName { get; set; }
+
+        /// <summary>
         /// 状态描述
         /// </summary>
         public string ExcuteDescription { get; set; }
@@ -104,7 +109,7 @@ namespace LF.Schedule.Manage
 
     public class StateListResult
     {
-        public IEnumerable<ServiceStateInfo> ServiceStateList
+        public List<ServiceStateInfo> ServiceStateList
         { get; set; }
     }
 

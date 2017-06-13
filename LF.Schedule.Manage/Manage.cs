@@ -9,6 +9,7 @@ namespace LF.Schedule.Manage
         {
             InitializeComponent();
             LoadData();
+            serviceDataGridView.ClearSelection();
         }
 
         private void btnStart_Click(object sender, EventArgs e)
@@ -49,6 +50,8 @@ namespace LF.Schedule.Manage
             {
                 var serviceStateResult = ManageHelper.GetStateList();
                 serviceDataGridView.DataSource = serviceStateResult.ServiceStateList;
+                if (serviceDataGridView.Rows.Count > 0)
+                    serviceDataGridView.Rows[0].Selected = false;
             }
             catch (Exception ex)
             {
@@ -59,7 +62,7 @@ namespace LF.Schedule.Manage
 
         private void SendCommand(ServiceCommandEnum serviceCommandEnum)
         {
-            if (serviceDataGridView.SelectedRows.Count <= 0)
+            if (serviceDataGridView.SelectedRows.Count <= 0 && serviceCommandEnum != ServiceCommandEnum.Load)
             {
                 MessageBox.Show(@"请选择需要操作的服务");
                 return;

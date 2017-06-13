@@ -28,7 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.btnStart = new System.Windows.Forms.Button();
             this.btnStop = new System.Windows.Forms.Button();
             this.btnResetStart = new System.Windows.Forms.Button();
@@ -44,6 +45,7 @@
             this.ServiceStopTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ExcuteDescription = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ServiceStateName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.serviceDataGridView)).BeginInit();
             this.SuspendLayout();
@@ -80,7 +82,7 @@
             // 
             // btnLoad
             // 
-            this.btnLoad.Location = new System.Drawing.Point(246, 3);
+            this.btnLoad.Location = new System.Drawing.Point(408, 3);
             this.btnLoad.Name = "btnLoad";
             this.btnLoad.Size = new System.Drawing.Size(75, 23);
             this.btnLoad.TabIndex = 3;
@@ -90,7 +92,7 @@
             // 
             // btnInstall
             // 
-            this.btnInstall.Location = new System.Drawing.Point(327, 3);
+            this.btnInstall.Location = new System.Drawing.Point(246, 3);
             this.btnInstall.Name = "btnInstall";
             this.btnInstall.Size = new System.Drawing.Size(75, 23);
             this.btnInstall.TabIndex = 4;
@@ -100,7 +102,7 @@
             // 
             // btnUninstall
             // 
-            this.btnUninstall.Location = new System.Drawing.Point(408, 3);
+            this.btnUninstall.Location = new System.Drawing.Point(327, 3);
             this.btnUninstall.Name = "btnUninstall";
             this.btnUninstall.Size = new System.Drawing.Size(75, 23);
             this.btnUninstall.TabIndex = 5;
@@ -124,6 +126,9 @@
             // 
             // serviceDataGridView
             // 
+            this.serviceDataGridView.AllowUserToAddRows = false;
+            this.serviceDataGridView.AllowUserToDeleteRows = false;
+            this.serviceDataGridView.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
             this.serviceDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.serviceDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.ServiceKey,
@@ -132,22 +137,37 @@
             this.ServiceStartTime,
             this.ServiceStopTime,
             this.Description,
-            this.ExcuteDescription});
+            this.ExcuteDescription,
+            this.ServiceStateName});
             this.serviceDataGridView.Location = new System.Drawing.Point(0, 49);
+            this.serviceDataGridView.MultiSelect = false;
             this.serviceDataGridView.Name = "serviceDataGridView";
+            this.serviceDataGridView.ReadOnly = true;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.ControlLightLight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.Desktop;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.serviceDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            this.serviceDataGridView.RowTemplate.DefaultCellStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.serviceDataGridView.RowTemplate.DefaultCellStyle.SelectionForeColor = System.Drawing.Color.Black;
             this.serviceDataGridView.RowTemplate.Height = 23;
+            this.serviceDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.serviceDataGridView.Size = new System.Drawing.Size(1044, 438);
             this.serviceDataGridView.TabIndex = 7;
             // 
             // ServiceKey
             // 
             this.ServiceKey.DataPropertyName = "ServiceKey";
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.ServiceKey.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.ServiceKey.DefaultCellStyle = dataGridViewCellStyle3;
             this.ServiceKey.Frozen = true;
             this.ServiceKey.HeaderText = "服务主键";
             this.ServiceKey.Name = "ServiceKey";
             this.ServiceKey.ReadOnly = true;
+            this.ServiceKey.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.ServiceKey.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.ServiceKey.Width = 120;
             // 
@@ -162,7 +182,7 @@
             // 
             // ServiceState
             // 
-            this.ServiceState.DataPropertyName = "ServiceState";
+            this.ServiceState.DataPropertyName = "ServiceStateName";
             this.ServiceState.HeaderText = "服务状态";
             this.ServiceState.Name = "ServiceState";
             this.ServiceState.ReadOnly = true;
@@ -200,7 +220,17 @@
             this.ExcuteDescription.DataPropertyName = "ExcuteDescription";
             this.ExcuteDescription.HeaderText = "运行状态描述";
             this.ExcuteDescription.Name = "ExcuteDescription";
+            this.ExcuteDescription.ReadOnly = true;
+            this.ExcuteDescription.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.ExcuteDescription.Width = 200;
+            // 
+            // ServiceStateName
+            // 
+            this.ServiceStateName.DataPropertyName = "ServiceState";
+            this.ServiceStateName.HeaderText = "服务状态标识";
+            this.ServiceStateName.Name = "ServiceStateName";
+            this.ServiceStateName.ReadOnly = true;
+            this.ServiceStateName.Visible = false;
             // 
             // Manage
             // 
@@ -236,6 +266,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn ServiceStopTime;
         private System.Windows.Forms.DataGridViewTextBoxColumn Description;
         private System.Windows.Forms.DataGridViewTextBoxColumn ExcuteDescription;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ServiceStateName;
     }
 }
 

@@ -72,7 +72,7 @@ namespace LF.Schedule.Task.Contract
                         return new SendCommandResult()
                         {
                             Success = false,
-                            Message = $"指定ID[{sendCommandParam.ServiceKey}]的服务启动失败"
+                            Message = $"指定ID[{sendCommandParam.ServiceKey}]的服务启动失败  失败信息：[{sendCommandResult.Message}]"
                         };
                     }
                 }
@@ -108,7 +108,7 @@ namespace LF.Schedule.Task.Contract
                         return new SendCommandResult()
                         {
                             Success = false,
-                            Message = $"指定ID[{sendCommandParam.ServiceKey}]的服务停止失败"
+                            Message = $"指定ID[{sendCommandParam.ServiceKey}]的服务停止失败 失败信息：[{sendCommandResult.Message}]"
                         };
                     }
                 }
@@ -133,7 +133,7 @@ namespace LF.Schedule.Task.Contract
                         return new SendCommandResult()
                         {
                             Success = false,
-                            Message = $"指定ID[{sendCommandParam.ServiceKey}]的服务重新启动失败"
+                            Message = $"指定ID[{sendCommandParam.ServiceKey}]的服务重新启动失败 失败信息：[{sendCommandResult.Message}]"
                         };
                     }
                 }
@@ -147,7 +147,7 @@ namespace LF.Schedule.Task.Contract
                         return new SendCommandResult()
                         {
                             Success = false,
-                            Message = $"指定ID[{sendCommandParam.ServiceKey}]的服务已被加载"
+                            Message = $"指定ID[{sendCommandParam.ServiceKey}]的服务已被安装"
                         };
                     }
 
@@ -158,7 +158,7 @@ namespace LF.Schedule.Task.Contract
                         return new SendCommandResult()
                         {
                             Success = false,
-                            Message = $"指定ID[{sendCommandParam.ServiceKey}]的服务加载失败"
+                            Message = $"指定ID[{sendCommandParam.ServiceKey}]的服务安装失败 失败信息：[{sendCommandResult.Message}]"
                         };
                     }
                 }
@@ -172,7 +172,7 @@ namespace LF.Schedule.Task.Contract
                         return new SendCommandResult()
                         {
                             Success = false,
-                            Message = $"指定ID[{sendCommandParam.ServiceKey}]的服务未被加载"
+                            Message = $"指定ID[{sendCommandParam.ServiceKey}]的服务未被安装"
                         };
                     }
 
@@ -183,7 +183,7 @@ namespace LF.Schedule.Task.Contract
                         return new SendCommandResult()
                         {
                             Success = false,
-                            Message = $"指定ID[{sendCommandParam.ServiceKey}]的服务卸载失败"
+                            Message = $"指定ID[{sendCommandParam.ServiceKey}]的服务卸载失败 失败信息：[{sendCommandResult.Message}]"
                         };
                     }
 
