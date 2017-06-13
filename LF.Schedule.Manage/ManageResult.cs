@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace LF.Schedule.Contract
+namespace LF.Schedule.Manage
 {
     public enum ServiceStateEnum
     {

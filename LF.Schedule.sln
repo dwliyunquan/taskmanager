@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LF.Schedule.Contract", "LF.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LF.Winservice.Test1", "LF.Winservice.Test1\LF.Winservice.Test1.csproj", "{E69F909D-77CF-4A38-8886-CCD79A09F9F5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LF.Schedule.Manage", "LF.Schedule.Manage\LF.Schedule.Manage.csproj", "{07B24F88-2459-49DD-B996-5A58F17A62EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{E69F909D-77CF-4A38-8886-CCD79A09F9F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E69F909D-77CF-4A38-8886-CCD79A09F9F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E69F909D-77CF-4A38-8886-CCD79A09F9F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07B24F88-2459-49DD-B996-5A58F17A62EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07B24F88-2459-49DD-B996-5A58F17A62EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07B24F88-2459-49DD-B996-5A58F17A62EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07B24F88-2459-49DD-B996-5A58F17A62EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
