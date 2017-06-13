@@ -15,27 +15,6 @@ namespace LF.Winservice.Test1
             return true;
         }
 
-        void Info(string message)
-        {
-            try
-            {
 
-                string folder = AppDomain.CurrentDomain.BaseDirectory + "/" + "TaskInfo/";
-                Console.WriteLine(folder);
-                if (!Directory.Exists(folder))
-                {
-                    Directory.CreateDirectory(folder);
-                }
-                StringBuilder sb = new StringBuilder();
-                DateTime dt = DateTime.Now;
-                sb.AppendLine(dt.ToString("yyyy-MM-dd HH:mm:ss ") + message);
-                File.AppendAllText(folder + "/" + dt.ToString("yyyyMMddHH") + ".Info.log", sb.ToString());
-            }
-            catch (Exception ex)
-            {
-
-                return;
-            }
-        }
     }
 }
