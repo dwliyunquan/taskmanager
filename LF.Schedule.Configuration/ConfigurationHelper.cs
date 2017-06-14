@@ -1,4 +1,5 @@
-﻿using System.Collections.Specialized;
+﻿using System;
+using System.Collections.Specialized;
 using System.Configuration;
 using SXT.Configuration;
 
@@ -10,7 +11,9 @@ namespace LF.Schedule.Configuration
 
         static ConfigurationHelper()
         {
-            Configuration = new DefaultConfiguration("ServiceJob.config", "ServiceJobConfig");
+            Configuration = new DefaultConfiguration("WindowsConsoleService.config", "WindowsServiceConfig");
+            if (null==Configuration)
+                throw new Exception("WindowsConsoleService.config配置文件节点[WindowsServiceConfig]为空");
         }
 
         public static string ServiceFile => Configuration["ServiceFile"].Trim();

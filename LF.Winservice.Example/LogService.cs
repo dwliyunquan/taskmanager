@@ -14,6 +14,7 @@ namespace LF.Winservice.Example
             {
                 WriteInfo("这是我要测试的日志");
                 message = "返回日志";
+                throw  new Exception("我的日志日常了");
                 return true;
             }
         }

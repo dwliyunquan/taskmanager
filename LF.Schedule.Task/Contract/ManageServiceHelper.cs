@@ -53,9 +53,9 @@ namespace LF.Schedule.Task.Contract
 
         private static string GetManageServicePort()
         {
-            var serviceConfiguration = ConfigurationManager.GetSection("ServiceJobConfig") as NameValueCollection;
+            var serviceConfiguration = ConfigurationManager.GetSection("WindowsServiceConfig") as NameValueCollection;
             if(null==serviceConfiguration)
-                throw new Exception("请配置[ServiceJobConfig]");
+                throw new Exception("请配置[WindowsServiceConfig]");
             var servicePort = serviceConfiguration["ManageServicePort"];
 
             var manageServicePort = 9000;

@@ -47,9 +47,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ServiceJob.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\LF.Schedule.Configuration\LF.Schedule.Configuration.csproj">
       <Project>{b7f33711-b20c-4293-93e8-a6be4c136730}</Project>
       <Name>LF.Schedule.Configuration</Name>
