@@ -10,7 +10,7 @@ namespace LF.Schedule.Manage
 
         public static StateListResult GetStateList()
         {
-            var stateListResult=  ServiceClient.HttpGet<StateListResult>(ConfigSetting.DataServiceUrl);
+            var stateListResult = ServiceClient.HttpGet<StateListResult>(ConfigSetting.DataServiceUrl);
             for (var i = 0; i < stateListResult.ServiceStateList.Count(); i++)
             {
                 if (!string.IsNullOrEmpty(Convert.ToString(stateListResult.ServiceStateList[i].ServiceStopTime)))
@@ -42,6 +42,7 @@ namespace LF.Schedule.Manage
                 }
             }
             return stateListResult;
+
         }
 
         private static SendCommandResult SendCommand(Dictionary<string,object> sendCommandParm)

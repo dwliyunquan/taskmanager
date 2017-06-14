@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Specialized;
+using System.Configuration;
 using System.Diagnostics;
 using System.ServiceModel.Description;
 using System.ServiceModel.Web;
@@ -51,19 +53,14 @@ namespace LF.Schedule.Task.Contract
 
         private static string GetManageServicePort()
         {
-            var serviceConfiguration = new DefaultConfiguration("ServiceJob.config", "ServiceJobConfig");
+            var serviceConfiguration = ConfigurationManager.GetSection("ServiceJobConfig") as NameValueCollection;
+            if(null==serviceConfiguration)
+                throw new Exception("请配置[ServiceJobConfig]");
             var servicePort = serviceConfiguration["ManageServicePort"];
 
             var manageServicePort = 9000;
             if (!int.TryParse(servicePort, out manageServicePort))
                 manageServicePort = 9000;
-            if (string.IsNullOrEmpty(servicePort))
-            {
-                var appSettingsSection = serviceConfiguration.AppSettings;
-                appSettingsSection.Settings.Add("ManageServicePort", manageServicePort.ToString());
-                serviceConfiguration.Configuration.Save();
-            }
-
             return manageServicePort.ToString();
         }
     }

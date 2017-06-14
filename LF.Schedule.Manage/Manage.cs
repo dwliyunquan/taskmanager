@@ -55,7 +55,8 @@ namespace LF.Schedule.Manage
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(@"请确保配置服务已经安装");
+                this.Close();
             }
 
         }
@@ -67,7 +68,9 @@ namespace LF.Schedule.Manage
                 MessageBox.Show(@"请选择需要操作的服务");
                 return;
             }
-            var serviceKey = Convert.ToString(serviceDataGridView.SelectedRows[0].Cells["serviceKey"].Value);
+            var serviceKey = string.Empty;
+            if (serviceCommandEnum != ServiceCommandEnum.Load)
+                serviceKey = Convert.ToString(serviceDataGridView.SelectedRows[0].Cells["serviceKey"].Value);
             var resultMessage = ManageHelper.SendCommand(serviceKey, serviceCommandEnum);
             MessageBox.Show(resultMessage);
             LoadData();

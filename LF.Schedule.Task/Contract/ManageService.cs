@@ -26,6 +26,12 @@ namespace LF.Schedule.Task.Contract
                 _log.Info("[SendCommand]:服务调用失败 [sendCommandParam参数不能为null]");
                 return new SendCommandResult() {Success = false, Message = "sendCommandParam参数不能为null"};
             }
+            if (sendCommandParam.Command == ServiceCommandEnum.Load)
+            {
+                ServiceInit.LoadService();
+                _log.InfoFormat("[SendCommand]:服务加载成功");
+                return new SendCommandResult() { Success = true, Message = "指令执行成功" };
+            }
 
             if (!ServiceHelper.ServiceStateInfoByServuceKey.ContainsKey(sendCommandParam.ServiceKey))
             {
@@ -187,12 +193,6 @@ namespace LF.Schedule.Task.Contract
                         };
                     }
 
-                }
-                    break;
-                case ServiceCommandEnum.Load:
-                {
-                    ServiceInit.LoadService();
-                    _log.InfoFormat("[SendCommand]:服务加载成功");
                 }
                     break;
                 default:
