@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B46F7DD1-D88D-4A88-84F7-C9D93F09FEF2}</ProjectGuid>
+    <ProjectGuid>{1E93DC65-34C8-4E47-8F09-3C7E70C27E68}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LF.Schedule.ConsoleTest</RootNamespace>
-    <AssemblyName>LF.Schedule.ConsoleTest</AssemblyName>
+    <RootNamespace>LF.Schedule.Install</RootNamespace>
+    <AssemblyName>Install</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -33,18 +33,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Common.Logging, Version=2.0.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\Common.Logging.dll</HintPath>
-    </Reference>
-    <Reference Include="Common.Logging.Log4Net, Version=2.0.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\Common.Logging.Log4Net.dll</HintPath>
-    </Reference>
-    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\log4net.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -59,13 +47,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="log4net.config" />
     <None Include="ServiceJob.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LF.Schedule.Task\LF.Schedule.Task.csproj">
-      <Project>{53dbb397-9942-4bf1-bf75-19316f800fc7}</Project>
-      <Name>LF.Schedule.Task</Name>
+    <ProjectReference Include="..\LF.Schedule.Configuration\LF.Schedule.Configuration.csproj">
+      <Project>{b7f33711-b20c-4293-93e8-a6be4c136730}</Project>
+      <Name>LF.Schedule.Configuration</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

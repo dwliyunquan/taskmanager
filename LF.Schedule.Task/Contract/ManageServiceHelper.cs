@@ -51,17 +51,18 @@ namespace LF.Schedule.Task.Contract
 
         private static string GetManageServicePort()
         {
-
             var serviceConfiguration = new DefaultConfiguration("ServiceJob.config", "ServiceJobConfig");
             var servicePort = serviceConfiguration["ManageServicePort"];
 
             var manageServicePort = 9000;
             if (!int.TryParse(servicePort, out manageServicePort))
                 manageServicePort = 9000;
-
-            var appSettingsSection = serviceConfiguration.Configuration.AppSettings;
-            appSettingsSection.Settings.Add("ManageServicePort", manageServicePort.ToString());
-            serviceConfiguration.Configuration.Save();
+            if (string.IsNullOrEmpty(servicePort))
+            {
+                var appSettingsSection = serviceConfiguration.AppSettings;
+                appSettingsSection.Settings.Add("ManageServicePort", manageServicePort.ToString());
+                serviceConfiguration.Configuration.Save();
+            }
 
             return manageServicePort.ToString();
         }
